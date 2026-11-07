@@ -17,10 +17,28 @@ const images = {
 
 const diary = [
   {
-    date: "September 11, 2020",
-    place: "Idaho, Western United States",
-    note: "Over one million acres burned as smoke traveled across the continent.",
-    image: images.smoke,
+    date: "May 18, 2003",
+    place: "Lake Baikal Region, Russia",
+    note:
+      "Persistent, intense smoke and a massive fire complex are visible, leading to widespread carbon emissions and air pollution across the area.",
+    image:
+      "https://imgs.mongabay.com/wp-content/uploads/sites/20/2020/07/23110144/GP1SU5IX_PressMedia.jpg",
+  },
+  {
+    date: "August 18, 2010",
+    place: "Amazonian Region, Bolivia",
+    note:
+      "Extreme drought caused over 25,000 active fire focus areas, burning more than 3.7 million hectares of forest and prompting a national state of emergency.",
+    image:
+      "https://www.aljazeera.com/wp-content/uploads/2011/09/2011920111118238965_20.jpeg",
+  },
+  {
+    date: "July 08, 2014",
+    place: "Northwest Territories, Canada",
+    note:
+      "Severe drought and lightning strikes ignited unprecedented boreal forest fires, burning 3.4 million hectares of land and sending smoke blanket across North America.",
+    image:
+      "https://bulletin.cmos.ca/wp-content/uploads/2019/04/banner_wildfire_CMOS.jpg",
   },
   {
     date: "May 08, 2016",
@@ -29,10 +47,80 @@ const diary = [
     image: images.aerial,
   },
   {
+    date: "December 30, 2019",
+    place: "Southeastern Australia",
+    note:
+      "Unprecedented record heat and severe drought ignited catastrophic mega-fires that burned over 24 million hectares, destroyed thousands of homes, and impacted nearly 3 billion animals across the continent.",
+    image:
+      "https://www.preventionweb.net/sites/default/files/styles/ultrawide_16_6/public/2022-08/Collection%20page%20image%20Australian%20Bushfire%202019-20.jpg?h=00975b30&itok=rUxKVnNf",
+  },
+  {
+    date: "September 11, 2020",
+    place: "Idaho, Western United States",
+    note: "Over one million acres burned as smoke traveled across the continent.",
+    image: images.smoke,
+  },
+  {
+    date: "August 12, 2021",
+    place: "Sakha Republic, Russia",
+    note:
+      "Historic heatwaves and severe drought sparked the largest wildfire season in recorded history, burning over 18.1 million hectares of taiga forest and sending massive smoke plumes all the way to the North Pole.",
+    image:
+      "https://static.themoscowtimes.com/image/article_1360/ee/TASS_47530367.jpg",
+  },
+  {
+    date: "June 07, 2023",
+    place: "Quebec & Western Canada",
+    note:
+      "Widespread record warmth and severe drought fueled Canada's most destructive wildfire season in recorded history, scorching over 18.5 million hectares and blanketing major North American cities in dense hazardous smoke.",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/1/17/Massive_fires_in_Qu%C3%A9bec%2C_Canada_%28Lat-_53_33%2C_Lng-_-76_11%29_-_28_June_2023_%2853013814798%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+  },
+  {
     date: "August 18, 2023",
     place: "British Columbia, Canada",
     note: "Extreme heat and dry conditions fueled a historic fire season.",
     image: images.fire,
+  },
+  {
+    date: "February 27, 2024",
+    place: "Texas Panhandle, United States",
+    note:
+      "High winds, dry vegetation, and unseasonably warm temperatures ignited the historic Smokehouse Creek Fire, which burned over 1.05 million acres to become the largest wildfire in Texas history.",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/7/7e/Smoke_from_the_Smokehouse_Creek_Fire_%282024-02-27%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+  },
+  {
+    date: "January 09, 2026",
+    place: "Victoria & Southeastern Australia",
+    note:
+      "Early-year heatwaves and strong dry winds ignited fast-moving bushfire complexes across southeastern Australia, consuming thousands of hectares of forest and farmland while forcing localized evacuations.",
+    image:
+      "https://i.guim.co.uk/img/media/adae8a8cfca5e7e92d53d3f48c7a323da7f1a4b6/0_0_2048_1536/master/2048.jpg?width=465&dpr=1&s=none&crop=none",
+  },
+  {
+    date: "July 27, 2026",
+    place: "Iberian Peninsula & Southern France",
+    note:
+      "Extreme heatwaves and prolonged drought ignited widespread mega-fires burning over 700,000 hectares, pushing air pollution across Western Europe and triggering extensive emergency evacuations.",
+    image:
+      "https://img.lemde.fr/2026/07/01/0/0/9504/6336/1440/960/60/0/e1afe00_ftp-1-2ggie8eteccv-5504038-01-06.jpg",
+  },
+  {
+    date: "September 01, 2026",
+    place: "Sumatra & Kalimantan, Indonesia",
+    note:
+      "Extended dry weather ignited widespread peatland and agricultural land fires, producing severe transboundary haze across Southeast Asia, degrading air quality, and releasing massive carbon emissions.",
+    image:
+      "https://imgs.mongabay.com/wp-content/uploads/sites/20/2026/07/02074421/Forest-and-land-fires-in-West-Kalimantan.jpg",
+  },
+  {
+    date: "October 12, 2026",
+    place: "Amazon Basin & Pantanal, South America",
+    note:
+      "Severe multi-year drought coupled with extreme heat sparked rampant fires across the Amazon rainforest and Pantanal wetlands, scorching millions of hectares and producing dense smoke plumes spanning across multiple South American nations.",
+    image:
+      "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/iotd/2026/fires-arrive-in-the-amazon-rainforest/amazofires_amo_20261012_lrg.jpg",
   },
 ]
 
@@ -289,19 +377,25 @@ function App() {
             </h2>
           </div>
           <div className="story-copy">
-            <p className="lead">
-              Something we thought would be temporary has become a visible
-              pattern on our planet.
+            <p>
+              What is a wildfire? A wildfire is an
+              uncontrolled fire that burns through natural vegetation such as
+              forests, grasslands, shrubland, or peat.
             </p>
             <p>
-              Forests absorb carbon, support biodiversity, and regulate the
-              water cycle. But warmer, drier conditions are transforming
-              seasonal wildfires into longer and more severe events. From orbit,
-              these changes leave an unmistakable mark.
+              What causes a wildfire? A fire needs fuel,
+              oxygen, and heat. Lightning can supply the spark, but most
+              wildfires are started by people, through unattended campfires,
+              discarded cigarettes, sparks from power lines or machinery, or
+              agricultural burns that escape control. Hot, dry, windy weather
+              and drought leave vegetation ready to burn.
             </p>
             <p>
-              The surface is not static. It records every disturbance, every
-              recovery, and every choice we make.
+              How does it spread? Flames dry and preheat the
+              vegetation ahead of them, and wind pushes the fire forward. Fire
+              travels faster uphill, and burning embers can be carried ahead of
+              the main fire to start new spot fires. From orbit, satellites
+              detect the heat that a fire gives off.
             </p>
           </div>
         </div>
@@ -438,7 +532,7 @@ function App() {
               <span className="eyebrow coral">Live observation</span>
               <h2>Where the surface is changing now.</h2>
             </div>
-            <p>Updated from NASA FRIMS</p>
+            <p>Updated from NASA FIRMS</p>
           </div>
           <div className="map-card">
             <img src={images.earth} alt="Satellite view of Earth" />
@@ -683,6 +777,7 @@ function App() {
             <a href="#story">Stories</a>
             <a href="#observe">Observations</a>
             <a href="#about">About</a>
+            <a href="#/documents">Documents</a>
           </div>
           <div>
             <strong>Find us</strong>
