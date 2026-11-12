@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import BurningCalendar from "./components/BurningCalendar/BurningCalendar"
+import { fireEvents } from "./components/BurningCalendar/fireEvents"
 import HotspotMap from "./components/HotspotMap/HotspotMap"
 
 const images = {
@@ -538,7 +539,7 @@ function App() {
           <HotspotMap />
         </div>
       </section>
-      <BurningCalendar />
+      <BurningCalendar events={fireEvents} />
       <section className="about section-pad" id="about">
         <div className="wrap about-grid">
           <article className="earth-card">
