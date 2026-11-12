@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import BurningCalendar from "./components/BurningCalendar/BurningCalendar"
+import HotspotMap from "./components/HotspotMap/HotspotMap"
 
 const images = {
   earth:
@@ -532,38 +533,9 @@ function App() {
               <span className="eyebrow coral">Live observation</span>
               <h2>Where the surface is changing now.</h2>
             </div>
-            <p>Updated from NASA FIRMS</p>
+            <p>MODIS and VIIRS thermal detections from NASA FIRMS, shown side by side.</p>
           </div>
-          <div className="map-card">
-            <img src={images.earth} alt="Satellite view of Earth" />
-            <div
-              className="map-grid"
-              role="img"
-              aria-label="Flat satellite map showing active wildfire observation areas"
-            >
-              <span className="map-window-label">Global fire monitor</span>
-              <span className="map-window-coordinates">60°N — 60°S</span>
-            </div>
-            {[
-              ["22%", "31%"],
-              ["27%", "56%"],
-              ["48%", "37%"],
-              ["67%", "48%"],
-              ["78%", "32%"],
-              ["84%", "61%"],
-            ].map(([left, top], index) => (
-              <span
-                className="hotspot"
-                key={index}
-                style={{ left, top }}
-                aria-hidden="true"
-              />
-            ))}
-            <div className="map-legend">
-              <span />
-              Active heat anomaly
-            </div>
-          </div>
+          <HotspotMap />
         </div>
       </section>
       <BurningCalendar />

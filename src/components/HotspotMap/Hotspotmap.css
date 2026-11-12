@@ -1,0 +1,405 @@
+/* Scoped styles for the hotspot map. All classes start with "hm" so the
+   global rules in index.css cannot affect them. */
+
+.hm {
+  --hm-ink: var(--ink, #101a4d);
+  --hm-coral: var(--coral, #ff6e5b);
+  --hm-paper: var(--paper, #f5ebdd);
+  --hm-white: var(--white, #ffffff);
+  color: var(--hm-ink);
+  font-family: inherit;
+}
+
+.hm *,
+.hm *::before,
+.hm *::after {
+  box-sizing: border-box;
+}
+
+/* Status bar */
+.hm-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+  padding: 12px 18px;
+  border: 1px solid rgba(16, 26, 77, 0.14);
+  border-radius: 50px;
+  background: var(--hm-white);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.hm-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8a8fa8;
+}
+
+.hm-status-loaded .hm-dot { background: #2f9e6b; }
+.hm-status-connecting .hm-dot,
+.hm-status-loading .hm-dot { background: #e0a526; }
+.hm-status-failed .hm-dot { background: #c0392b; }
+.hm-status-empty .hm-dot { background: #8a8fa8; }
+.hm-status-demo { border-color: var(--hm-coral); }
+.hm-status-demo .hm-dot { background: var(--hm-coral); }
+
+.hm-status-text {
+  flex: 1 1 260px;
+}
+
+.hm-badge {
+  padding: 5px 12px;
+  border-radius: 50px;
+  background: var(--hm-ink);
+  color: var(--hm-white);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hm-warning {
+  margin: 0 0 14px;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: rgba(255, 110, 91, 0.14);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.hm-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hm-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Summary */
+.hm-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.hm-summary > div {
+  padding: 12px 16px;
+  border-radius: 20px;
+  background: var(--hm-white);
+}
+
+.hm-summary dt {
+  margin: 0 0 4px;
+  color: rgba(16, 26, 77, 0.6);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hm-summary dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Filters */
+.hm-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hm-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: rgba(16, 26, 77, 0.65);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hm-filters select,
+.hm-filters input {
+  min-width: 130px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(16, 26, 77, 0.18);
+  border-radius: 50px;
+  background: var(--hm-white);
+  color: var(--hm-ink);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hm-filters select:disabled {
+  opacity: 0.5;
+}
+
+.hm-clear,
+.hm-overlay button {
+  height: 40px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 50px;
+  background: var(--hm-coral);
+  color: var(--hm-white);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hm-overlay button.hm-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+}
+
+/* Map and info panel */
+.hm-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+}
+
+.hm-mapwrap {
+  position: relative;
+  isolation: isolate;
+  height: 560px;
+  overflow: hidden;
+  border-radius: 48px;
+  background: var(--hm-ink);
+  box-shadow: 0 28px 70px rgba(16, 26, 77, 0.17);
+}
+
+.hm-map {
+  position: absolute;
+  inset: 0;
+  font: inherit;
+}
+
+.hm-legend,
+.hm-readout,
+.hm-cap {
+  position: absolute;
+  z-index: 1100;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  background: rgba(16, 26, 77, 0.85);
+  color: var(--hm-white);
+  font-size: 11px;
+  line-height: 1.4;
+  backdrop-filter: blur(10px);
+}
+
+.hm-legend {
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hm-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hm-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--hm-white);
+  border-radius: 50%;
+}
+
+.hm-legend i.hm-ring {
+  background: transparent;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.hm-legend small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+}
+
+.hm-readout {
+  bottom: 20px;
+  left: 20px;
+  border-radius: 50px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-cap {
+  top: 20px;
+  left: 64px;
+  max-width: 46%;
+  border-radius: 18px;
+}
+
+.hm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(16, 26, 77, 0.55);
+  color: var(--hm-white);
+  text-align: center;
+}
+
+.hm-overlay p {
+  margin: 0;
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.hm-overlay .hm-error {
+  font-size: 12px;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.hm-overlay div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Info panel */
+.hm-info {
+  max-height: 560px;
+  padding: 24px;
+  overflow-y: auto;
+  border-radius: 32px;
+  background: var(--hm-white);
+}
+
+.hm-info h3 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.hm-hint {
+  margin: 0;
+  color: rgba(16, 26, 77, 0.65);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.hm-demo-tag {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: rgba(255, 110, 91, 0.16);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hm-info dl {
+  margin: 0 0 14px;
+}
+
+.hm-row {
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(16, 26, 77, 0.09);
+}
+
+.hm-row dt {
+  color: rgba(16, 26, 77, 0.6);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hm-row dd {
+  margin: 3px 0 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.hm-note {
+  margin: 16px 4px 0;
+  color: rgba(16, 26, 77, 0.65);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Leaflet controls: keep readable on the site's palette */
+.hm-map .leaflet-control-zoom a {
+  color: var(--hm-ink);
+}
+
+@media (max-width: 960px) {
+  .hm-body {
+    grid-template-columns: 1fr;
+  }
+
+  .hm-mapwrap {
+    height: 420px;
+    border-radius: 30px;
+  }
+
+  .hm-info {
+    max-height: none;
+  }
+
+  .hm-cap {
+    top: 70px;
+    left: 20px;
+    max-width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 560px) {
+  .hm-mapwrap {
+    height: 360px;
+  }
+
+  .hm-legend {
+    top: 12px;
+    right: 12px;
+    padding: 8px 12px;
+  }
+
+  .hm-readout {
+    bottom: 28px;
+    left: 12px;
+  }
+
+  .hm-filters label,
+  .hm-filters select,
+  .hm-filters input {
+    width: 100%;
+  }
+
+  .hm-filters label {
+    flex: 1 1 140px;
+  }
+}
