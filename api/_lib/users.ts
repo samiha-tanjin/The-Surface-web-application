@@ -1,35 +1,41 @@
-import type { Collection, WithId } from "mongodb"
-import { getDb } from "./db.js"
+import bcrypt from 'bcryptjs';
+import { ObjectId } from 'mongodb';
+import { getDb } from './db.js';
 
-export type UserLocation = {
-  city: string
-  country: string
-  latitude: number
-  longitude: number
+export interface UserDoc {
+  _id?: ObjectId;
+  email: string;            // stored lowercase
+  name: string;
+  passwordHash: string;
+  location: { city: string; country?: string; lat: number; lon: number }; // captured at registration; Surfie uses it
+  preferences?: { alerts: string[]; units: 'metric' | 'imperial' };
+  isDemo?: boolean;
+  createdAt: Date;
 }
 
-export type UserDoc = {
-  name: string
-  email: string
-  passwordHash: string
-  location: UserLocation
-  isJudge?: boolean
-  usage?: { day: string; chats: number }
-  createdAt: Date
+const col = async () => (await getDb()).collection<UserDoc>('users');
+
+export const findUserByEmail = async (email: string) => (await col()).findOne({ email: email.trim().toLowerCase() });
+export const findUserById = async (id: string) => (await col()).findOne({ _id: new ObjectId(id) });
+
+export async function createUser(i: { email: string; password: string; name: string; location: UserDoc['location'] }) {
+  const doc: UserDoc = {
+    email: i.email.trim().toLowerCase(), name: i.name, location: i.location,
+    passwordHash: await bcrypt.hash(i.password, 10),
+    preferences: { alerts: [], units: 'metric' }, createdAt: new Date(),
+  };
+  const r = await (await col()).insertOne(doc);
+  return { ...doc, _id: r.insertedId };
 }
 
-export async function usersCollection(): Promise<Collection<UserDoc>> {
-  const db = await getDb()
-  return db.collection<UserDoc>("users")
+/** Returns the user if email+password match, otherwise null. */
+export async function verifyLogin(email: string, password: string) {
+  const u = await findUserByEmail(email);
+  return u && (await bcrypt.compare(password, u.passwordHash)) ? u : null;
 }
 
-/** Only these fields ever go to the browser. Never the password hash. */
-export function publicUser(u: WithId<UserDoc>) {
-  return {
-    id: u._id.toString(),
-    name: u.name,
-    email: u.email,
-    location: u.location,
-    isJudge: Boolean(u.isJudge),
-  }
-}
+/** Safe to send to the browser (no hash). */
+export const toPublicUser = (u: UserDoc) => ({
+  id: String(u._id), email: u.email, name: u.name, location: u.location,
+  preferences: u.preferences, isDemo: !!u.isDemo,
+});

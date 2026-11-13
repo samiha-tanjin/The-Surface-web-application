@@ -1,25 +1,94 @@
-import jwt from "jsonwebtoken"
-import type { VercelRequest } from "@vercel/node"
-
-function secret(): string {
-  const s = process.env.JWT_SECRET
-  if (!s || s.length < 16) throw new Error("JWT_SECRET is missing or too short")
-  return s
+export type SessionUser = {
+  id: string
+  name: string
+  email: string
+  isJudge: boolean
+  location: { city: string; country: string; latitude: number; longitude: number }
 }
 
-export function signToken(userId: string): string {
-  return jwt.sign({ sub: userId }, secret(), { expiresIn: "7d" })
-}
+const TOKEN_KEY = "surface_token"
 
-/** Returns the user id from an "Authorization: Bearer <token>" header, or null. */
-export function userIdFromRequest(req: VercelRequest): string | null {
-  const header = req.headers.authorization ?? ""
-  if (!header.startsWith("Bearer ")) return null
+export function getToken(): string | null {
   try {
-    const payload = jwt.verify(header.slice(7), secret())
-    if (typeof payload === "object" && typeof payload.sub === "string") return payload.sub
-    return null
+    return localStorage.getItem(TOKEN_KEY)
   } catch {
     return null
   }
+}
+
+export function saveToken(token: string) {
+  try {
+    localStorage.setItem(TOKEN_KEY, token)
+  } catch {
+    /* storage can be blocked; the session then lasts until the page reloads */
+  }
+}
+
+export function clearToken() {
+  try {
+    localStorage.removeItem(TOKEN_KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
+export class ApiError extends Error {
+  status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+  }
+}
+
+export async function api<T>(path: string, options: { method?: string; body?: unknown; token?: string | null } = {}): Promise<T> {
+  let res: Response
+  try {
+    res = await fetch(path, {
+      method: options.method ?? (options.body ? "POST" : "GET"),
+      headers: {
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    })
+  } catch {
+    throw new ApiError("Could not reach the server. Check your connection.", 0)
+  }
+
+  let data: unknown = null
+  try {
+    data = await res.json()
+  } catch {
+    throw new ApiError("The server is not running. Start the app with \"npm run dev:full\".", res.status)
+  }
+  if (!res.ok) {
+    const message = (data as { error?: string } | null)?.error ?? "Something went wrong."
+    throw new ApiError(message, res.status)
+  }
+  return data as T
+}
+
+type LoginResult = { token: string; user: SessionUser }
+
+export async function login(email: string, password: string): Promise<LoginResult> {
+  return api<LoginResult>("/api/login", { body: { email, password } })
+}
+
+export async function judgeLogin(): Promise<LoginResult> {
+  return api<LoginResult>("/api/login", { body: { demo: true } })
+}
+
+export async function fetchMe(token: string): Promise<SessionUser> {
+  const { user } = await api<{ user: SessionUser }>("/api/me", { token })
+  return user
+}
+
+// Keep in sync with api/_lib/cities.ts (the server holds the coordinates).
+export const CITY_NAMES = [
+  "Dhaka", "Chattogram", "Feni", "Sylhet", "Khulna", "Rajshahi", "Cox's Bazar",
+  "Los Angeles", "Sydney", "Athens", "London",
+]
+
+export async function signup(input: { name: string; email: string; password: string; city: string }): Promise<LoginResult> {
+  return api<LoginResult>("/api/signup", { body: input })
 }

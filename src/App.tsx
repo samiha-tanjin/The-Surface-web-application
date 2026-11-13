@@ -6,7 +6,7 @@ import { fireEvents } from "./components/BurningCalendar/fireEvents"
 import HotspotMap from "./components/HotspotMap/Hotspotmap.tsx"
 import LoginModal from "./components/Auth/LoginModal"
 import Surfie from "./components/Surfie/Surfie"
-import { clearToken, fetchMe, getToken, saveToken, type SessionUser } from "./lib/auth"
+import { CITY_NAMES, clearToken, fetchMe, getToken, saveToken, signup, type SessionUser } from "./lib/auth"
 
 const images = {
   earth:
@@ -326,6 +326,8 @@ function App() {
   const [subscribed, setSubscribed] = useState(false)
   const [showSignup, setShowSignup] = useState(false)
   const [accountCreated, setAccountCreated] = useState(false)
+  const [signupBusy, setSignupBusy] = useState(false)
+  const [signupError, setSignupError] = useState("")
   const [showLogin, setShowLogin] = useState(false)
   const [user, setUser] = useState<SessionUser | null>(null)
   const [token, setToken] = useState<string | null>(null)
@@ -361,13 +363,32 @@ function App() {
     if (email.trim()) setSubscribed(true)
   }
 
-  function createAccount(event: FormEvent<HTMLFormElement>) {
+  async function createAccount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setAccountCreated(true)
+    const form = new FormData(event.currentTarget) // read before the await
+    setSignupBusy(true)
+    setSignupError("")
+    try {
+      const { token: t, user: u } = await signup({
+        name: String(form.get("name") ?? ""),
+        email: String(form.get("email") ?? ""),
+        password: String(form.get("password") ?? ""),
+        city: String(form.get("city") ?? ""),
+      })
+      saveToken(t) // signed in straight away, so Surfie knows the city
+      setUser(u)
+      setToken(t)
+      setAccountCreated(true)
+    } catch (err) {
+      setSignupError(err instanceof Error ? err.message : "Could not create the account.")
+    } finally {
+      setSignupBusy(false)
+    }
   }
 
   function openSignup() {
     setAccountCreated(false)
+    setSignupError("")
     setShowSignup(true)
   }
 
@@ -774,6 +795,14 @@ function App() {
                     minLength={8}
                     required
                   />
+                  <label htmlFor="signup-city">Your city</label>
+                  <select id="signup-city" name="city" defaultValue="Dhaka" required>
+                    {CITY_NAMES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                   <label className="terms">
                     <input type="checkbox" required />
                     <span>
@@ -781,8 +810,13 @@ function App() {
                       Policy.
                     </span>
                   </label>
-                  <button className="signup-submit" type="submit">
-                    Create account <span aria-hidden="true">→</span>
+                  {signupError && (
+                    <p className="login-error" role="alert">
+                      {signupError}
+                    </p>
+                  )}
+                  <button className="signup-submit" type="submit" disabled={signupBusy}>
+                    {signupBusy ? "Creating…" : "Create account"} <span aria-hidden="true">→</span>
                   </button>
                 </form>
                 <p className="signup-note">

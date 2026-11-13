@@ -26,3 +26,4 @@ __pycache__/
 # Keep safe example environment files
 !.env.example
 !**/.env.example
+project-info.txt
