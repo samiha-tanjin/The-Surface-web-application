@@ -1,0 +1,21 @@
+.fire-warning {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.95em;
+  line-height: 1;
+  cursor: help;
+}
+.fire-warning--moderate { filter: saturate(0.9); }
+.fire-warning--high { filter: drop-shadow(0 0 3px rgba(255, 120, 0, 0.8)); }
+.fire-warning--extreme { animation: fire-pulse 1s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(220, 0, 0, 0.9)); }
+@keyframes fire-pulse { 50% { transform: scale(1.25); } }
+.fire-notice { margin: 4px 0; font-size: 0.85rem; opacity: 0.8; }
+
+/* Forecast block in the calendar side panel */
+.cal-forecast { margin: 12px 0; padding: 8px 12px; border-left: 4px solid #8a8a8a; background: rgba(128, 128, 128, 0.08); border-radius: 4px; }
+.cal-forecast p { margin: 2px 0; }
+.cal-forecast--low { border-left-color: #3f9d5b; }
+.cal-forecast--moderate { border-left-color: #e0b100; }
+.cal-forecast--high { border-left-color: #e26a00; }
+.cal-forecast--extreme { border-left-color: #d11a1a; }
+.cal-forecast-source { font-size: 0.78rem; opacity: 0.7; }

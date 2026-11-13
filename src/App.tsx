@@ -3,7 +3,10 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import BurningCalendar from "./components/BurningCalendar/BurningCalendar"
 import { fireEvents } from "./components/BurningCalendar/fireEvents"
-import HotspotMap from "./components/HotspotMap/HotspotMap"
+import HotspotMap from "./components/HotspotMap/Hotspotmap.tsx"
+import LoginModal from "./components/Auth/LoginModal"
+import Surfie from "./components/Surfie/Surfie"
+import { clearToken, fetchMe, getToken, saveToken, type SessionUser } from "./lib/auth"
 
 const images = {
   earth:
@@ -323,6 +326,35 @@ function App() {
   const [subscribed, setSubscribed] = useState(false)
   const [showSignup, setShowSignup] = useState(false)
   const [accountCreated, setAccountCreated] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const [user, setUser] = useState<SessionUser | null>(null)
+  const [token, setToken] = useState<string | null>(null)
+
+  // Restore the session after a page reload.
+  useEffect(() => {
+    const saved = getToken()
+    if (!saved) return
+    fetchMe(saved)
+      .then((u) => {
+        setUser(u)
+        setToken(saved)
+      })
+      .catch(() => clearToken())
+  }, [])
+
+  function handleLoggedIn(u: SessionUser, t: string) {
+    saveToken(t)
+    setUser(u)
+    setToken(t)
+    setShowLogin(false)
+    setShowSignup(false)
+  }
+
+  function logout() {
+    clearToken()
+    setUser(null)
+    setToken(null)
+  }
 
   function submitEmail(event: FormEvent) {
     event.preventDefault()
@@ -348,9 +380,26 @@ function App() {
             <a href="#story">Stories</a>
             <a href="#observe">Observe</a>
             <a href="#about">About</a>
-            <button className="nav-join" onClick={openSignup}>
-              Join
-            </button>
+            {user ? (
+              <button className="nav-join" onClick={logout}>
+                {user.name.split(" ")[0]} · Log out
+              </button>
+            ) : (
+              <>
+                <a
+                  href="#join"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    setShowLogin(true)
+                  }}
+                >
+                  Sign in
+                </a>
+                <button className="nav-join" onClick={openSignup}>
+                  Join
+                </button>
+              </>
+            )}
           </div>
         </nav>
         <div className="hero-glow" />
@@ -612,6 +661,10 @@ function App() {
             </button>
           </div>
           <div className="chat-card">
+            {user && token ? (
+              <Surfie user={user} token={token} onSessionExpired={logout} />
+            ) : (
+              <>
             <div className="chat-head">
               <span className="status-dot" />
               <strong>Surfie</strong>
@@ -643,6 +696,8 @@ function App() {
                 <span className="success">You’re on the list. Welcome.</span>
               )}
             </form>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -731,12 +786,32 @@ function App() {
                   </button>
                 </form>
                 <p className="signup-note">
-                  Already a member? <button type="button">Sign in</button>
+                  Already a member?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowSignup(false)
+                      setShowLogin(true)
+                    }}
+                  >
+                    Sign in
+                  </button>
                 </p>
               </>
             )}
           </section>
         </div>
+      )}
+
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onLoggedIn={handleLoggedIn}
+          onSwitchToSignup={() => {
+            setShowLogin(false)
+            openSignup()
+          }}
+        />
       )}
 
       <footer>

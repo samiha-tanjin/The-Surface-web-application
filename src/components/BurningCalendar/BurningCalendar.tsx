@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react"
 import type { FireEvent } from "./types"
 import "./BurningCalendar.css"
+import { useFirePrediction } from "../../lib/firePrediction"
+import { FireWarning, PredictionNotice } from "../FireWarning"
 
 const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 const MONTH_NAMES = [
@@ -57,9 +59,12 @@ const durationDays = (e: FireEvent) =>
 
 interface Props {
   events?: FireEvent[]
+  // Where to forecast wildfire risk. Defaults to Dhaka, Bangladesh until a saved user location is passed in.
+  lat?: number
+  lon?: number
 }
 
-export default function BurningCalendar({ events = [] }: Props) {
+export default function BurningCalendar({ events = [], lat = 23.81, lon = 90.41 }: Props) {
   // Open on the most recent fire so the calendar is never empty on first load.
   const latest = useMemo(() => {
     const exact = events.filter((e) => e.startExact).map((e) => e.startDate)
@@ -70,6 +75,8 @@ export default function BurningCalendar({ events = [] }: Props) {
   const [selected, setSelected] = useState(() => latest)
   // A fire with no exact start day, chosen from the list under the grid.
   const [pickedId, setPickedId] = useState<string | null>(null)
+  // 7-day wildfire risk from the prediction engine (proxied at /engine), keyed by "YYYY-MM-DD".
+  const prediction = useFirePrediction(lat, lon)
 
   const years = useMemo(() => {
     const ys = events.map((e) => e.year)
@@ -98,6 +105,7 @@ export default function BurningCalendar({ events = [] }: Props) {
   const selectedKey = dayKey(selected)
   const picked = pickedId ? events.find((e) => e.id === pickedId) : undefined
   const selectedEvents = picked ? [picked] : startingOn(selected)
+  const selectedRisk = picked ? undefined : prediction.byDate[selectedKey]
 
   const goMonth = (n: number) => setMonth(new Date(month.getFullYear(), month.getMonth() + n, 1))
   const jump = (y: number, m: number) => setMonth(new Date(y, m, 1))
@@ -158,6 +166,11 @@ export default function BurningCalendar({ events = [] }: Props) {
 
         <div className="cal-layout">
           <div>
+            <PredictionNotice
+              loading={prediction.loading}
+              error={prediction.error}
+              hotspotsAvailable={prediction.hotspotsAvailable}
+            />
             <div className="cal-grid-card">
               <div className="cal-weekdays">
                 {WEEKDAYS.map((d) => (
@@ -168,6 +181,7 @@ export default function BurningCalendar({ events = [] }: Props) {
                 {buildGrid(month).map((day) => {
                   const list = startingOn(day)
                   const key = dayKey(day)
+                  const risk = prediction.byDate[key]
                   const classes = [
                     "cal-day",
                     day.getMonth() !== month.getMonth() ? "is-outside" : "",
@@ -184,9 +198,14 @@ export default function BurningCalendar({ events = [] }: Props) {
                         setPickedId(null)
                       }}
                       aria-pressed={key === selectedKey && !picked}
-                      aria-label={`${longFmt.format(day)}, ${list.length} ${list.length === 1 ? "fire starts" : "fires start"}`}
+                      aria-label={`${longFmt.format(day)}, ${list.length} ${list.length === 1 ? "fire starts" : "fires start"}${
+                        risk && risk.level !== "low" ? `, ${risk.level} wildfire risk forecast` : ""
+                      }`}
                     >
-                      <span className="cal-num">{day.getDate()}</span>
+                      <span className="cal-num">
+                        {day.getDate()}
+                        <FireWarning risk={risk} />
+                      </span>
                       {list.slice(0, 2).map((e) => (
                         <span key={e.id} className="cal-pill" title={e.name}>
                           {e.name}
@@ -227,6 +246,19 @@ export default function BurningCalendar({ events = [] }: Props) {
               {monthCount} {monthCount === 1 ? "fire starts" : "fires start"} this month
               {approxThisMonth.length > 0 ? `, ${approxThisMonth.length} more with approximate dates` : ""}
             </p>
+
+            {selectedRisk && (
+              <div className={`cal-forecast cal-forecast--${selectedRisk.level}`}>
+                <p className="cal-label">Wildfire risk forecast</p>
+                <p>
+                  <strong>{selectedRisk.level.toUpperCase()}</strong> ({selectedRisk.score}/100): {selectedRisk.reason}
+                </p>
+                <p className="cal-forecast-source">
+                  {prediction.source === "grok" ? "AI-assisted estimate (Grok)" : "Rule-based estimate"} from NASA MODIS and
+                  VIIRS hotspots and weather data
+                </p>
+              </div>
+            )}
 
             {selectedEvents.length === 0 ? (
               <p className="cal-empty">No fire is recorded as starting on this day.</p>

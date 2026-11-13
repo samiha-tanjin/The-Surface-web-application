@@ -10,3 +10,19 @@ vite.config.*.timestamp-*
 logs/
 *.log
 
+
+# Local development
+.vscode/
+archive/
+project_dump.txt
+backend_structure.txt
+structure.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Keep safe example environment files
+!.env.example
+!**/.env.example

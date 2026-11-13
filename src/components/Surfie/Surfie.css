@@ -1,0 +1,88 @@
+.surfie-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 300px;
+  min-height: 150px;
+  overflow-y: auto;
+  margin: 1rem 0 0.75rem;
+  padding-right: 0.25rem;
+}
+.surfie-msg {
+  margin: 0;
+  max-width: 88%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.surfie-msg.from-bot {
+  align-self: flex-start;
+  background: color-mix(in srgb, currentColor 9%, transparent);
+}
+.surfie-msg.from-user {
+  align-self: flex-end;
+  background: color-mix(in srgb, currentColor 20%, transparent);
+}
+.surfie-typing {
+  opacity: 0.7;
+  font-style: italic;
+}
+.surfie-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.surfie-chips button {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.surfie-chips button:hover:not(:disabled) {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+.surfie-form {
+  display: flex;
+  gap: 0.5rem;
+}
+.surfie-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.surfie-form button {
+  padding: 0 1.1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #e8613c;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.surfie-form button:disabled,
+.surfie-chips button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.surfie-error {
+  margin: 0 0 0.6rem;
+  color: #c0392b;
+  font-size: 0.88rem;
+}
+.surfie-source {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.65;
+}

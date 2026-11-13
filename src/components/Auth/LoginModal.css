@@ -1,0 +1,40 @@
+.demo-login {
+  width: 100%;
+  margin: 0 0 0.9rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.demo-login:hover:not(:disabled) {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+.demo-login:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.login-or {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+.login-or::before,
+.login-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.25;
+}
+.login-error {
+  margin: 0.25rem 0 0;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
