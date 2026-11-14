@@ -49,7 +49,7 @@ A web application built for the **NASA Space Apps Challenge 2026**. The web appl
   ```
 - Start the development server
   ```bash
-  npm run dev
+  npm run dev -- --host 127.0.0.1
   ```
 - Open the local host link in your browser (usually http://localhost:5173/)
 ### Commands 
